@@ -49,3 +49,28 @@ deploymentconfig.apps.openshift.io/transvc created (server dry run)
 ## apply
 oc create -f mysql-persistent.yaml
 ```
+
+## Something about OC DIFF
+
+oc diff is very smart command. It checks if the deployment can be updated, if it finds it cannot be, it will simply deploy new.
+Try to change the `DATABASE_SERVICE_NAME` it will create new deployment, but then try to change the password of `MYSQL_PASSWORD`, it will update it
+but of course you must restart the pod. In contrast, change the user name. Nothing will happen, of course secret change can be seen but in pod nothing changes.
+
+While checking this I learnt a sql command how to find users.
+
+```bash
+oc exec -it pods/transvc-1-57x9k -- mysql -uroot -e "select user,host from mysql.user;"
+### /ö\ OutPut ### /ö\
++------------------+-----------+
+| user             | host      |
++------------------+-----------+
+| root             | %         |
+| transdba         | %         |
+| mysql.infoschema | localhost |
+| mysql.session    | localhost |
+| mysql.sys        | localhost |
+| root             | localhost |
++------------------+-----------+
+### \ö/ OutPut ### \ö/
+
+```

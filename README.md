@@ -54,9 +54,10 @@ oc create -f mysql-persistent.yaml
 
 Will play little bit here. Change to v1 branch. You can clone the repo of v1 branch using the command
 
+```bash
 git clone --branch v1 https://github.com/letsdodevelopment/packagedapps.git
-
 cd packagedapps
+```
 
 ### Make changes
 
@@ -110,7 +111,7 @@ index 352c12c..ebe7377 100644
  - apiVersion: v1
 ```
 
-Now just run `oc apply -f mysql-persistent.yaml --validate=true --dry-run=server` and then execute it using oc apply -f mysql-persistent.yaml
+Now just run `oc apply -f mysql-persistent.yaml --validate=true --dry-run=server` and then execute it using `oc apply -f mysql-persistent.yaml`
 
 ## Something about OC DIFF
 
@@ -134,5 +135,13 @@ oc exec -it pods/transvc-1-57x9k -- mysql -uroot -e "select user,host from mysql
 | root             | localhost |
 +------------------+-----------+
 ### \ö/ OutPut ### \ö/
-
 ```
+
+## Things I learnt here
+
+- Use git show, git restore and git diff command
+- how to find sql users (hint it is stored in table which is mysql.user, which is singular for unknown reasons.)
+- oc diff works
+- you need write access to manage templates, instead you copy the templates into your project using oc process template command and export.
+- you do not need password to access.
+- clone branch directory

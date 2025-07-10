@@ -50,6 +50,68 @@ deploymentconfig.apps.openshift.io/transvc created (server dry run)
 oc create -f mysql-persistent.yaml
 ```
 
+## Now you should switch to branch v1
+
+Will play little bit here. Change to v1 branch. You can clone the repo of v1 branch using the command
+
+git clone --branch v1 https://github.com/letsdodevelopment/packagedapps.git
+
+cd packagedapps
+
+### Make changes
+
+using your editor, change DATABASE_SERVICE_NAME parameters in mysql-param-file.ini file. Now overwrite
+mysql-persistent.yaml, using the following command
+
+```bash
+oc process -f mysql-persistent-template.yaml --param-file mysql-param-file.ini -o yaml > mysql-persistent.yaml
+
+# check the changes in the file using the following command
+
+git diff .
+```
+
+when all looks okay and expected, run `oc diff -f mysql-persistent.yaml`, you will observe a completely new file is created. We do not want this. So got ahead and revert the changes, you do using `git restore .` command
+
+now make changes to the password of the database i.e. MYSQL_PASSWORD, if you are in v1, you will see password is already changed. You can double check this using `git show` command
+
+```bash
+➜  packagedapps git:(v1) git show
+commit f5b7bb0f9456fc005d21bf7cb3c623cfe1f4f86b (HEAD -> v1, origin/v1)
+Author: repolevedp <repolevedp@gmail.com>
+Date:   Thu Jul 10 12:31:03 2025 +0200
+
+    just changed the password of the user
+
+diff --git a/mysql-param-file.ini b/mysql-param-file.ini
+index c21e336..daf9696 100644
+--- a/mysql-param-file.ini
++++ b/mysql-param-file.ini
+@@ -1,6 +1,6 @@
+ DATABASE_SERVICE_NAME=transvc
+ MYSQL_USER=transdba
+-MYSQL_PASSWORD=passit
++MYSQL_PASSWORD=passit123456
+ MYSQL_ROOT_PASSWORD=passitRoot123#
+ MYSQL_DATABASE=itemsx
+ VOLUME_CAPACITY=2Gi
+diff --git a/mysql-persistent.yaml b/mysql-persistent.yaml
+index 352c12c..ebe7377 100644
+--- a/mysql-persistent.yaml
++++ b/mysql-persistent.yaml
+@@ -14,7 +14,7 @@ items:
+     name: transvc
+   stringData:
+     database-name: itemsx
+-    database-password: passit
++    database-password: passit123456
+     database-root-password: passitRoot123
+     database-user: transdba
+ - apiVersion: v1
+```
+
+Now just run `oc apply -f mysql-persistent.yaml --validate=true --dry-run=server` and then execute it using oc apply -f mysql-persistent.yaml
+
 ## Something about OC DIFF
 
 oc diff is very smart command. It checks if the deployment can be updated, if it finds it cannot be, it will simply deploy new.

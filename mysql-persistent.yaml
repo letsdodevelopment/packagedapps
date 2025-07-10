@@ -14,7 +14,7 @@ items:
     name: transvc
   stringData:
     database-name: itemsx
-    database-password: passit
+    database-password: passit123456
     database-root-password: passitRoot123
     database-user: transdba
 - apiVersion: v1
